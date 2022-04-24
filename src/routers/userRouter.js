@@ -5,7 +5,7 @@ const auth = require('../middlewares/auth');
 const userRouter = new express.Router();
 
 userRouter.get('/', auth, (req, res) => {
-    res.send(req.user);
+    res.status(200).send(req.user);
 })
 
 userRouter.post('/signup', async (req, res) => {
@@ -32,6 +32,21 @@ userRouter.post('/login', async (req, res) => {
         res.status(400).send(error);
     }
 
+})
+
+userRouter.post('/logout', auth, async (req, res) => {
+    user = req.user;
+
+    try {
+        user.tokens = user.tokens.filter((token) => {
+            return token.token !== req.token;
+        })
+
+        await user.save()
+        res.status(200).send()
+    } catch (error) {
+        res.status(500).send(error);
+    }
 })
 
 module.exports = userRouter;
