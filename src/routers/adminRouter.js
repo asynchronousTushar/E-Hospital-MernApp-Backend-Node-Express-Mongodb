@@ -15,7 +15,15 @@ adminRouter.post('/adminsignup', (req, res) => {
     })
 })
 
+adminRouter.post('/adminlogin', async (req, res) => {
+    try {
+        const admin = await Admin.findByCredentials(req.body.email, req.body.password);
 
+        res.send(admin)
+    } catch (error) {
+        res.status(404).send(error.message);
+    }
+})
 
 
 
