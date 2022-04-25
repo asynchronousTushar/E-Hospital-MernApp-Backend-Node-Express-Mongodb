@@ -11,7 +11,7 @@ adminRouter.post('/adminsignup', (req, res) => {
         res.status(201).send(response);
     })
     .catch(e => {
-        res.status(400).send('invalid input data!')
+        res.status(400).send(e)
     })
 })
 

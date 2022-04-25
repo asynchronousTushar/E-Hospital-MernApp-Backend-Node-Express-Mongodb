@@ -33,6 +33,15 @@ const adminSchema = new mongoose.Schema({
     }
 })
 
+adminSchema.methods.toJSON = function () {
+    const admin = this;
+    let adminObject = admin.toObject();
+
+    delete adminObject.password
+
+    return adminObject;
+}
+
 adminSchema.statics.findByCredentials = async (email, password) => {
     const admin = await Admin.findOne({ email })
 
@@ -50,7 +59,7 @@ adminSchema.statics.findByCredentials = async (email, password) => {
 }
 
 adminSchema.pre("save", async function (next) {
-    let admin = this;
+    const admin = this;
 
     if (admin.isModified('password')) {
         admin.password = await bcryptjs.hash(admin.password, 8);
