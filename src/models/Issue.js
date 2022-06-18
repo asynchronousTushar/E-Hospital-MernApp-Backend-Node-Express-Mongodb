@@ -5,12 +5,11 @@ const issueSchema = new mongoose.Schema({
         type: Object,
         required: true
     },
-    admin: {
-        type: Object,
-        require: true
+    preferredDoctor: {
+        type: mongoose.Schema.Types.ObjectId
     },
-    problem: {
-        type: String,
+    issue: {
+        type: Object,
         required: true
     }
 })
