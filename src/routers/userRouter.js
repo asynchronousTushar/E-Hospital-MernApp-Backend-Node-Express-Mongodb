@@ -8,7 +8,7 @@ const mongoose = require('mongoose')
 const userRouter = new express.Router();
 
 userRouter.get('/', auth, (req, res) => {
-    res.status(200).send({ user: req.user, admins: req.admins });
+    res.status(200).send({ user: req.user, admins: req.admins, issues: req.issues });
 })
 
 userRouter.post('/signup', async (req, res) => {
@@ -17,8 +17,9 @@ userRouter.post('/signup', async (req, res) => {
     try {
         const token = await user.generateAuthToken();
         const admins = await Admin.find();
+        const issues = await Issue.find({ user: user._id.toString() })
         await user.save()
-        res.status(201).send({ user, token, admins })
+        res.status(201).send({ user, token, admins, issues })
     }
     catch (error) {
         res.status(400).send(error);
@@ -31,8 +32,8 @@ userRouter.post('/login', async (req, res) => {
         const admins = await Admin.find();
         const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
-
-        res.status(200).send({ user, token, admins })
+        const issues = await Issue.find({ user: user._id.toString() })
+        res.status(200).send({ user, token, admins, issues })
     } catch (error) {
         res.status(400).send(error);
     }
@@ -59,7 +60,7 @@ userRouter.post('/requestissue', async (req, res) => {
 
     try {
         if (description.trim().length < 40) {
-            throw new Error("Please describe more about your issue.", {statusCode: 408})
+            throw new Error("Please describe more about your issue.", { statusCode: 408 })
         }
 
         if (!mongoose.Types.ObjectId.isValid(preferredDoctor) && preferredDoctor !== 'anonymous') {
@@ -99,7 +100,7 @@ userRouter.post('/requestissue', async (req, res) => {
         }
 
     } catch (error) {
-        res.status(400).send({error: error.message })
+        res.status(400).send({ error: error.message })
     }
 
 })
