@@ -3,7 +3,7 @@ const User = require('../models/User');
 const Admin = require('../models/Admin');
 const Issue = require('../models/Issue');
 const auth = require('../middlewares/auth');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const userRouter = new express.Router();
 
